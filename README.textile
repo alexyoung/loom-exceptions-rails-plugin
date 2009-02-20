@@ -1,0 +1,41 @@
+h2. Loom
+
+This plugin provides exception reporting for "Loom":http://loomapp.com.
+
+h2. Usage
+
+You must sign up to Loom to use this plugin.
+
+Add this to a controller in your application:
+
+<pre><code>
+  enable_loom :email => 'alex@helicoid.net',
+              :password => 'test',
+              :url => 'http://helicoid.localhost:3000',
+              :project_id => 18,
+              :user_id => Proc.new { self.session[:user_id] },
+              :before_action => :try_to_load_account,
+              :display => :error_page
+</code></pre>
+
+# Add a user account to Loom to use for exception reporting
+# Then set the project ID you'd like to send reports to
+# Finally, set the URL of your Loom account (loom uses subdomains for accounts)
+
+The <code>user_id</code> parameter can be used to represent your application's user.  We sometimes use this to record the email address of the customer who encountered an exception to provide them with support.
+
+The <code>display</code> parameter references a controller action.  It will be rendered after the exception has been handled.
+
+Similarly, <code>before_action</code> is an action that will be run before rendering the display action.  This can be used to check a visitor is logged in to display either an internal application or public template.
+
+h2. Todo
+
+* We need to correctly handle Loom being down or errors reporting to Loom
+* Error reporting API for easy reporting outside controllers
+
+h2. Credits
+
+* Created by Alex Young for Helicoid Limited (helicoid.net)
+* Advice and additional development by Gabriel Gironda (annealer.org)
+
+Copyright (c) 2008-2009 Helicoid Limited, released under the MIT license
