@@ -7,7 +7,12 @@ namespace :loom do
   desc "Sends a test exception so you can test your settings"
   task :test do
     require 'action_controller/test_process'
-    require 'app/controllers/application_controller'
+
+    begin
+      require 'app/controllers/application_controller'
+    rescue LoadError
+      require 'app/controllers/application'
+    end
 
     class ApplicationController
       def test

@@ -22,7 +22,7 @@ module Helicoid
     
     module Reporter
       def self.included(base)
-        base.send(:alias_method, :original_rescue_action_in_public, :rescue_action_in_public)
+        base.send(:alias_method, :rescue_action_in_public_without_loom, :rescue_action_in_public)
         base.send(:alias_method, :rescue_action_in_public, :send_to_loom)
       end
 
@@ -48,7 +48,7 @@ module Helicoid
           loom.user_id = user_id
         end
 
-        original_rescue_action_in_public exception
+        rescue_action_in_public_without_loom exception
       end
     end
     
@@ -58,7 +58,7 @@ module Helicoid
       end
 
       def enable_loom(options = {})
-        logger.warn "enable_loom has been removed.  Please use config/initializers/loom.rb."
+        logger.warn "enable_loom has been removed.  Please use config/initializers/loom.rb or call Helicoid::Loom.configure."
       end
     end
   end

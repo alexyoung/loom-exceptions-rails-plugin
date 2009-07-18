@@ -8,12 +8,6 @@ You must sign up to Loom to use this plugin.  Install as a gem or a plugin.
 
 h3. Installation
 
-As a gem:
-
-<code>gem install loom-exceptions-rails-plugin --source=http://gems.github.com/</code>
-
-As a plugin:
-
 <code>script/plugin install git://github.com/alexyoung/loom-exceptions-rails-plugin.git</code>
 
 Add this to <code>config/initializers/loom.rb</code>
