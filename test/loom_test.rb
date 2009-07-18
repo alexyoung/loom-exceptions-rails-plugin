@@ -58,7 +58,7 @@ class LoomTest < Test::Unit::TestCase
     def mock_loom_exception(options = {})
       exception = LoomException.new 'helicoid', 'xxx'
       exception.session = OpenStruct.new :user_id => '1'
-      exception.cookies = []
+      exception.cookies = [{ :var_1 => [1, 2, 3, 4], :var_2 => { :a => 'b' }}]
       exception.request_parameters = []
       exception.url = 'http://example.com'
       exception.user_id = '1'
