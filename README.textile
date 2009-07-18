@@ -4,34 +4,28 @@ This plugin provides exception reporting for "Loom":http://loomapp.com.
 
 h2. Usage
 
-You must sign up to Loom to use this plugin.
+You must sign up to Loom to use this plugin.  Install as a gem or a plugin.
 
-Add this to a controller in your application:
+h3. Installation
+
+As a gem:
+
+<code>gem install loom-exceptions-rails-plugin --source=http://gems.github.com/</code>
+
+As a plugin:
+
+<code>script/plugin install git://github.com/alexyoung/loom-exceptions-rails-plugin.git</code>
+
+Add this to <code>config/initializers/loom.rb</code>
 
 <pre><code>
-  enable_loom :email => 'alex@helicoid.net',
-              :password => 'test',
-              :url => 'http://helicoid.localhost:3000',
-              :project_id => 18,
-              :user_id => Proc.new { self.session[:user_id] },
-              :before_action => :try_to_load_account,
-              :display => :error_page
+Helicoid::Loom.configure do |config|
+  config.api_key = 'xxx'
+  config.server = 'http://loomapp.com'
+end
 </code></pre>
 
-# Add a user account to Loom to use for exception reporting
-# Then set the project ID you'd like to send reports to
-# Finally, set the URL of your Loom account (loom uses subdomains for accounts)
-
-The <code>user_id</code> parameter can be used to represent your application's user.  We sometimes use this to record the email address of the customer who encountered an exception to provide them with support.
-
-The <code>display</code> parameter references a controller action.  It will be rendered after the exception has been handled.
-
-Similarly, <code>before_action</code> is an action that will be run before rendering the display action.  This can be used to check a visitor is logged in to display either an internal application or public template.
-
-h2. Todo
-
-* We need to correctly handle Loom being down or errors reporting to Loom
-* Error reporting API for easy reporting outside controllers
+The <code>server</code> option can be used with the open source version of Loom.
 
 h2. Credits
 

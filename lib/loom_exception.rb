@@ -2,13 +2,13 @@ require 'pp'
 require 'net/http'
 
 class LoomException
-  attr_accessor :session, :cookies, :request_parameters, :url, :user_id, :exception, :project_id, :remote_ip
+  attr_accessor :session, :cookies, :request_parameters, :url, :user_id, :exception, :remote_ip
   
   class LoomDown < Exception ; end
   class LoomError < Exception ; end
   
-  def initialize(url, email, password)
-    @loom_login = { :url => url, :email => email, :password => password }
+  def initialize(url, api_key)
+    @loom_login = { :url => url, :api_key => api_key }
   end
   
   def send_to_loom
@@ -22,8 +22,8 @@ class LoomException
     end
   end
   
-  def self.log(url, email, password, &block)
-    loom = new url, email, password
+  def self.log(url, api_key, &block)
+    loom = new url, api_key
     yield loom
     loom.send_to_loom
   rescue LoomDown # TODO
@@ -37,12 +37,11 @@ class LoomException
   
   private
     def post
-      url = URI.parse "#{@loom_login[:url]}/projects/#{@project_id}/exceptions"
+      url = URI.parse "#{@loom_login[:url]}/report/#{@loom_login[:api_key]}"
     
       req = Net::HTTP::Post.new url.path
       req.add_field 'Accept', 'application/xml'
       req.add_field 'Content-Type', 'application/xml'
-      req.basic_auth @loom_login[:email], @loom_login[:password]
       
       connection = Net::HTTP.new(url.host, url.port)
       connection.request req, loom_parameters_as_xml

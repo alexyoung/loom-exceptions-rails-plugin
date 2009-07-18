@@ -1,27 +1,44 @@
 module Helicoid
   module Loom
-    def self.enable
-      ActionController::Base.class_eval do
-        include InstanceMethods
-        extend ClassMethods
+    class << self
+      attr_accessor :api_key, :server, :before_action, :user_id
+
+      def enable
+        ActionController::Base.class_eval do
+          include Reporter
+        end
+      end
+
+      def configure
+        yield self
+
+        self.server ||= 'http://loomapp.com'
+
+        if defined?(ActionController::Base) && !ActionController::Base.include?(Helicoid::Loom::Reporter)
+          enable
+        end
       end
     end
     
-    module InstanceMethods
-      def log_with_loom(exception)
+    module Reporter
+      def self.included(base)
+        base.send(:alias_method, :original_rescue_action_in_public, :rescue_action_in_public)
+        base.send(:alias_method, :rescue_action_in_public, :send_to_loom)
+      end
+
+      def send_to_loom(exception)
         raise if local_request?
         
-        send(loom_options[:before_action]) if loom_options.has_key? :before_action
+        send(Helicoid::Loom.before_action) if Helicoid::Loom.before_action
         
-        user_id = case loom_options[:user_id]
+        user_id = case Helicoid::Loom.user_id
         when Proc
-          loom_options[:user_id].bind(self).call
+          Helicoid::Loom.user_id.bind(self).call
         when Symbol, String
-          send loom_options[:user_id]
+          send Helicoid::Loom.user_id
         end
         
-        LoomException.log loom_options[:url], loom_options[:email], loom_options[:password] do |loom|
-          loom.project_id = loom_options[:project_id]
+        LoomException.log Helicoid::Loom.server, Helicoid::Loom.api_key do |loom|
           loom.session = session.data
           loom.remote_ip = request.remote_ip
           loom.exception = exception
@@ -30,25 +47,18 @@ module Helicoid
           loom.url = request.request_uri
           loom.user_id = user_id
         end
-        
-        if loom_options.has_key? :display
-          send(loom_options[:display])
-        else
-          raise
-        end
+
+        original_rescue_action_in_public exception
       end
     end
     
     module ClassMethods
-      def enable_loom(options = {})
-        write_inheritable_hash :loom_options, options
-        class_inheritable_reader :loom_options
+      def logger
+        ActiveRecord::Base.logger
+      end
 
-        class_eval <<-RUBY
-          rescue_from Exception do |exception|
-            log_with_loom exception
-          end
-        RUBY
+      def enable_loom(options = {})
+        logger.warn "enable_loom has been removed.  Please use config/initializers/loom.rb."
       end
     end
   end

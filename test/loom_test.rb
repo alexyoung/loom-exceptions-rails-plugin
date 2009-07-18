@@ -26,6 +26,15 @@ class LoomTest < Test::Unit::TestCase
     assert exception.send_to_loom
   end
 
+  def test_configure
+    Helicoid::Loom.configure do |config|
+      config.api_key = 'xxx'
+    end
+
+    assert_equal 'xxx', Helicoid::Loom.api_key
+    assert_equal 'http://loomapp.com', Helicoid::Loom.server
+  end
+
   private
 
     def mocked_response(options = {})
@@ -47,14 +56,13 @@ class LoomTest < Test::Unit::TestCase
     end
 
     def mock_loom_exception(options = {})
-      exception = LoomException.new 'helicoid', 'alex@example.com', 'test'
+      exception = LoomException.new 'helicoid', 'xxx'
       exception.session = OpenStruct.new :user_id => '1'
       exception.cookies = []
       exception.request_parameters = []
       exception.url = 'http://example.com'
       exception.user_id = '1'
       exception.exception = options[:exception] || ZeroDivisionError.new
-      exception.project_id = 1
       exception.remote_ip = '127.0.0.1'
       exception
     end
