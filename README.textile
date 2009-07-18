@@ -21,6 +21,8 @@ end
 
 The <code>server</code> option can be used with the open source version of Loom.
 
+If you use <code>rescue_action_in_public</code> use <code>rescue_action_in_public_without_loom</code> to stop overloading Loom's reporter.
+
 h2. Credits
 
 * Created by Alex Young for Helicoid Limited (helicoid.net)
