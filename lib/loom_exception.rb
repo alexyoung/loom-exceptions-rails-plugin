@@ -43,6 +43,7 @@ class LoomException
       req.add_field 'Accept', 'application/x-www-form-urlencoded'
       req.add_field 'Content-Type', 'application/x-www-form-urlencoded'
       req.set_form_data({ :remote_exception => loom_parameters.to_yaml })
+
       connection = Net::HTTP.new(url.host, url.port)
       connection.request req
     end
@@ -50,13 +51,13 @@ class LoomException
     def loom_parameters
       {
         :title => "#{@exception.class}: #{@exception.to_s}",
-        :details => { :session_variables => @session.dup,
-                      :cookies => @cookies.dup,
-                      :request_parameters => @request_parameters.dup,
-                      :url => @url,
-                      :user_id => @user_id,
-                      :remote_ip => @remote_ip,
-                      :stack_trace => stack_trace }
+        :details => { 'session_variables' => @session.dup,
+                      'cookies' => @cookies.dup,
+                      'request_parameters' => @request_parameters.dup,
+                      'url' => @url,
+                      'user_id' => @user_id,
+                      'remote_ip' => @remote_ip,
+                      'stack_trace' => stack_trace }
       }
     end
     

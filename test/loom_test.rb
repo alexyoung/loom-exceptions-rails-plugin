@@ -30,7 +30,6 @@ class LoomTest < Test::Unit::TestCase
     Helicoid::Loom.configure do |config|
       config.api_key = 'xxx'
     end
-
     assert_equal 'xxx', Helicoid::Loom.api_key
     assert_equal 'http://loomapp.com', Helicoid::Loom.server
   end
